@@ -70,8 +70,7 @@
     document.querySelectorAll("[data-download]").forEach(function (el) {
       if (url) {
         el.setAttribute("href", url);
-        el.setAttribute("target", "_blank");
-        el.setAttribute("rel", "noopener");
+        
       } else {
         el.setAttribute("aria-disabled", "true");
         el.addEventListener("click", function (e) { e.preventDefault(); });
