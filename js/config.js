@@ -15,7 +15,7 @@
    ============================================================ */
 window.JUA_CONFIG = {
   /* The Android APK download location (provided later). */
-  DOWNLOAD_URL: "",
+ DOWNLOAD_URL: "https://github.com/aaron-nova-99/jua/releases/download/v1.0.0-beta/Jua.apk",
 
   /* Brand color (Dodger Blue) — also referenced in CSS via --jua-blue. */
   BRAND: "#1E90FF",
