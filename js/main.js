@@ -166,6 +166,86 @@
     }, { passive: true });
   }
 
+  /* ---------- Reading progress bar ---------- */
+  function setupProgress() {
+    var bar = document.querySelector(".scroll-progress");
+    if (!bar) return;
+    var onScroll = function () {
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + "%";
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+  }
+
+  /* ---------- Back to top ---------- */
+  function setupBackToTop() {
+    var btn = document.querySelector(".back-to-top");
+    if (!btn) return;
+    var onScroll = function () {
+      btn.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.6);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    btn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    });
+  }
+
+  /* ---------- Scroll-spy active nav ---------- */
+  function setupScrollSpy() {
+    if (!("IntersectionObserver" in window)) return;
+    var sections = document.querySelectorAll("main section[id]");
+    var links = document.querySelectorAll(".nav-link[href^='#'], .mobile-link[href^='#']");
+    if (!sections.length || !links.length) return;
+    var map = {};
+    links.forEach(function (l) {
+      var id = l.getAttribute("href").slice(1);
+      if (id) map[id] = l;
+    });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = map[entry.target.id];
+        if (!link) return;
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove("is-active"); });
+          link.classList.add("is-active");
+        }
+      });
+    }, { rootMargin: "-40% 0px -55% 0px", threshold: 0 });
+    sections.forEach(function (s) { if (map[s.id]) io.observe(s); });
+  }
+
+  /* ---------- Mobile sticky CTA ---------- */
+  function setupMobileCta() {
+    var bar = document.querySelector(".mobile-cta-bar");
+    if (!bar) return;
+    var onScroll = function () {
+      bar.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.6);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  /* ---------- Footer social (render only if configured) ---------- */
+  function setupFooterSocial() {
+    var wrap = document.querySelector(".footer-social");
+    if (!wrap) return;
+    var s = (window.JUA_CONFIG && window.JUA_CONFIG.SOCIAL) || {};
+    var labels = { instagram: "Instagram", twitter: "X / Twitter", tiktok: "TikTok" };
+    Object.keys(labels).forEach(function (key) {
+      if (!s[key]) return;
+      var a = document.createElement("a");
+      a.href = s[key];
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "footer-social__link";
+      a.textContent = labels[key];
+      wrap.appendChild(a);
+    });
+  }
+
   /* ---------- Init ---------- */
   document.addEventListener("DOMContentLoaded", function () {
     loadAssets();
@@ -174,6 +254,11 @@
     setupHeader();
     setupMobileMenu();
     setupParallax();
+    setupProgress();
+    setupBackToTop();
+    setupScrollSpy();
+    setupMobileCta();
+    setupFooterSocial();
   });
 })();
 
